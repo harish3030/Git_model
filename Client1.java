@@ -45,8 +45,8 @@ public class Client1 {
             else{                                                                                          
                    System.out.println("Invalid command");                                                  
             }            
-            ProjectGUI print = new ProjectGUI();
-            print.showFiles();
+            //ProjectGUI print = new ProjectGUI();
+            //print.showFiles();
             input.close();
             dataOutputStream.close();
             dataInputStream.close();                                                                                  
@@ -137,58 +137,3 @@ public class Client1 {
             file_stream.close();                                                                               
         }
 }           
-class ProjectGUI extends JFrame {
-
-   //rea tf;
-    //JButton button;
-    JTable j;
-    JScrollPane  sp;
-    
-    public ProjectGUI() {
-    
-        super("Files");
-        //tf = new JTextArea();
-        String[] columnNames = { "File Name", "File Size" ,"File Type"};
-        String path = "C:\\Users\\HP\\Desktop\\jav\\commited_files";
-
-        String files;
-       
-        File folder = new File(path);
-        File[] listOfFiles = folder.listFiles(); 
-        String fileNames[][] = new String[listOfFiles.length][3];
-        for (int i = 0; i < listOfFiles.length; i++) 
-        {
-  
-         if (listOfFiles[i].isFile()) 
-         {
-         files = listOfFiles[i].getName();
-             if (files.endsWith(".txt") || files.endsWith(".TXT"))
-             {
-                //fileNames += "\n" + files;
-                fileNames[i][0]=files;
-                fileNames[i][1]=String.valueOf(listOfFiles[i].length());
-                //fileNames[i][2]=String.valueOf(listOfFiles[i].lastModified());
-                fileNames[i][2]="Text Document";
-              }
-          }
-        }
-          //tf.setText( fileNames );
-          j = new JTable(fileNames, columnNames);
-          j.setBounds(30, 40, 200, 300);
-         sp = new JScrollPane(j);
-         System.out.println("Added"); 
-        add(sp);
-        
-        // set visible JFrame with some size (400x400)
-        setSize(400,400);
-        setVisible(true);
-    
-    }
-    
-    void showFiles() {
-       
-    }
-    
-    
-     
-    }
