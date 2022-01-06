@@ -3,7 +3,12 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 import java.time.*;
-
+import java.time.format.DateTimeFormatter;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
 public class ServiceClient1 implements Runnable {
 
     private Socket clientSocket;
@@ -26,9 +31,8 @@ public class ServiceClient1 implements Runnable {
             dataInputStream = new DataInputStream(clientSocket.getInputStream());
             dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
 
-            log_path="log\\"+java.time.LocalDate.now()+".txt";
-            System.out.println(log_path);
-            log_file=new FileWriter(log_path,true);
+            //log_path="log\\"+java.time.LocalTime.now()+".txt";
+           
 
            
             int t=dataInputStream.readInt();
@@ -39,6 +43,8 @@ public class ServiceClient1 implements Runnable {
             else{
                   send_File();
             }            
+            ProjectGUI print = new ProjectGUI();
+            print.showFiles();
             dataInputStream.close();
             dataOutputStream.close();
             log_file.close();
@@ -67,7 +73,12 @@ public class ServiceClient1 implements Runnable {
         String[] split_o=f.split("/");
         String file_name=split_o[split_o.length-1];
         //String f="a.txt";
-
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("HH-mm-ss");
+        String log_path = myDateObj.format(myFormatObj);
+        log_path="log\\"+log_path+".txt";
+        System.out.println(log_path);
+        log_file=new FileWriter(log_path,true);
         File new_file=new File(dir_path+file_name);
 
         if(new_file.exists()){
@@ -142,3 +153,75 @@ public class ServiceClient1 implements Runnable {
         fileInputStream.close();
     }
 }
+
+class ProjectGUI extends JFrame {
+
+    //rea tf;
+     //JButton button;
+     JTable j;
+     JScrollPane  sp;
+     JTextArea tarea;
+     
+     public ProjectGUI() {
+     
+         super("Files");
+          tarea = new JTextArea(3,3);
+         //tf = new JTextArea();
+         String[] columnNames = { "File Name", "File Size" ,"File Type"};
+         String path = "C:\\Users\\HP\\Desktop\\OOAD_proj\\Server\\Repo";
+         String path1= "C:\\Users\\HP\\Desktop\\OOAD_proj\\Server\\log";
+         
+         String files;
+        
+         File folder = new File(path);
+         File[] listOfFiles = folder.listFiles(); 
+         String fileNames[][] = new String[listOfFiles.length][3];
+
+         File folder1=new File(path1);
+         File[] list1=folder1.listFiles();
+
+         String log_file=list1[list1.length-1].getName();
+         try{
+         String p="log\\"+log_file;
+         BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(p)));
+         tarea.read(input, "READING LOG FILE :-)");
+         }
+         catch (Exception e) {
+            e.printStackTrace();
+          }
+         for (int i = 0; i < listOfFiles.length; i++) 
+         {
+   
+          if (listOfFiles[i].isFile()) 
+          {
+          files = listOfFiles[i].getName();
+              if (files.endsWith(".txt") || files.endsWith(".TXT"))
+              {
+                 //fileNames += "\n" + files;
+                 fileNames[i][0]=files;
+                 fileNames[i][1]=String.valueOf(listOfFiles[i].length());
+                 //fileNames[i][2]=String.valueOf(listOfFiles[i].lastModified());
+                 fileNames[i][2]="Text Document";
+               }
+           }
+         }
+           //tf.setText( fileNames );
+           j = new JTable(fileNames, columnNames);
+           j.setBounds(30, 40,5,5);
+          sp = new JScrollPane(j);
+          
+          add(sp,BorderLayout.NORTH);
+          add(tarea, BorderLayout.CENTER);
+         // set visible JFrame with some size (400x400)
+         setSize(400,400);
+         setVisible(true);
+     
+     }
+     
+     void showFiles() {
+        
+     }
+     
+     
+      
+     }
